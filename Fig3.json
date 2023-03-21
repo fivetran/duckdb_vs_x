@@ -5,20 +5,35 @@
     "url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSZ93w0fPI-Kt9NxZjptLvY_8FNFftTpgatpdP3cMQsBrVa_CXh3UuN_w2XWMSMrNGEc0I5W0j6os08/pub?gid=162640663&single=true&output=csv",
     "format": {"type": "csv", "parse": {"vCPU": "number", "Scale": "number"}}
   },
-  "transform": [{"filter": "datum.Configuration != 'M1 Pro'"}],
   "layer": [
     {
-      "mark": {"type": "line", "interpolate": "natural"},
+      "transform": [{"filter": "datum.Configuration != 'M1 Pro'"}],
+      "layer": [
+        {
+          "mark": {"type": "line", "interpolate": "natural", "opacity": 0.5},
+          "encoding": {
+            "strokeDash": {
+              "field": "System",
+              "type": "nominal",
+              "sort": "descending",
+              "title": "SYSTEM"
+            }
+          }
+        },
+        {"mark": {"type": "point", "filled": true, "size": 150, "opacity": 0.25}}
+      ],
       "encoding": {
-        "strokeDash": {
-          "field": "System",
-          "type": "nominal",
-          "sort": "descending",
-          "title": "SYSTEM"
-        }
+        "color": {"field": "vCPU", "type": "nominal"}
       }
     },
-    {"mark": {"type": "point", "filled": true, "size": 150}}
+    {
+      "transform": [{"filter": "datum.Configuration == 'M1 Pro'"}],
+      "layer": [
+        {"mark": {"type": "line", "interpolate": "natural", "strokeWidth": 4}},
+        {"mark": {"type": "point", "filled": true, "size": 300, "opacity": 0.9}}
+      ],
+      "encoding": {"color": {"value": "#2F6BE8"}}
+    }
   ],
   "encoding": {
     "x": {
@@ -33,7 +48,6 @@
       "scale": {"type": "log", "domain": [0.5, 20]},
       "title": "GEOMEAN EXECUTION TIME (s)"
     },
-    "color": {"field": "vCPU", "type": "nominal"},
     "tooltip": [
       {"field": "System", "type": "nominal"},
       {"field": "Configuration", "type": "nominal"},
