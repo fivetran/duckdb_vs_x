@@ -4,7 +4,7 @@ import statistics
 
 # Configuration.
 database = "/mnt/disks/ssd/db"
-database = "db"
+# database = "db" # Macbook
 scales = ["63", "125", "250"]
 results = {}
 
