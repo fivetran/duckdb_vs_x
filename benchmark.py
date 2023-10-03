@@ -1,11 +1,16 @@
 import duckdb
 import os
-import threading
 from tableauhyperapi import HyperProcess, Telemetry, Connection, CreateMode
 import time
-import statistics
+import concurrent.futures
+import sys
 
-parallelism = 100
+cpus = int(sys.argv[1])
+memory = cpus * 4
+min_scale = cpus * 2
+max_scale = min_scale * 2 * 2
+memory_per_scale = 8 # we need a 8:1 ratio of memory to the size of data we generate concurrently.
+steps = int(cpus * memory_per_scale * max_scale / memory) # memory_per_scale = memory / (max_scale * cpus / steps)
 tables = ['nation','region','customer','supplier','lineitem','orders','partsupp','part']
 
 # def generate_queries():
@@ -21,19 +26,19 @@ def make_dirs(scale):
             os.makedirs(path)
 
 def generate_data(scale, step):
-    duckdb.sql(f"create schema tpch_{scale}_{step}; call dbgen(schema=tpch_{scale}_{step}, sf={scale}, children={parallelism}, step={step})")
+    duckdb.sql(f"create schema tpch_{scale}_{step}; call dbgen(schema=tpch_{scale}_{step}, sf={scale}, children={steps}, step={step})")
     for table in tables:
         duckdb.sql(f"copy tpch_{scale}_{step}.{table} to '/tmp/benchmark/{scale}/{table}/{step}.parquet'")
 
 def generate_all_data(scale):
     make_dirs(scale)
-    threads = []
-    for step in range(0, parallelism):
-        thread = threading.Thread(target=generate_data, args=(scale, step))
-        thread.start()
-        threads.append(thread)
-    for thread in threads:
-        thread.join()
+    tasks = []
+    with concurrent.futures.ThreadPoolExecutor(cpus) as executor:
+        for step in range(0, steps):
+            future = executor.submit(generate_data, scale, step)
+            tasks.append(future)
+        for task in tasks:
+            task.result()
 
 def copy_to_duckdb(scale):
     path=f"/tmp/benchmark/{scale}/duckdb"
@@ -49,43 +54,36 @@ def copy_to_hyper(scale):
     with HyperProcess(telemetry=Telemetry.SEND_USAGE_DATA_TO_TABLEAU) as hyper:
         with Connection(endpoint=hyper.endpoint, database=f"/tmp/benchmark/{scale}/hyper",create_mode=CreateMode.CREATE_AND_REPLACE) as connection:
             for table in ['nation','region','customer','supplier','lineitem','orders','partsupp','part']:
-                files_list =[ f"'/tmp/benchmark/{scale}/{table}/{step}.parquet'" for step in range(0, parallelism) ]
+                files_list =[ f"'/tmp/benchmark/{scale}/{table}/{step}.parquet'" for step in range(0, steps) ]
                 files_string = ", ".join(files_list)
                 connection.execute_command(f"create table {table} as (select * from external(array[{files_string}]))")
 
 def benchmark_duckdb(scale):
     with duckdb.connect(f"/tmp/benchmark/{scale}/duckdb") as connection:
-        times = []
         for query in range(1, 23):
             start = time.time()
             text = open(f"queries/{query}.sql").read()
             connection.sql(text).execute()
             end = time.time()
-            times.append(end-start)
-        print(statistics.geometric_mean(times))
+            print(f'DuckDB\t{cpus}\t{memory}\t{scale}\t{query}\t{end-start}')
 
 def benchmark_hyper(scale):
     with HyperProcess(telemetry=Telemetry.SEND_USAGE_DATA_TO_TABLEAU) as hyper:
         with Connection(endpoint=hyper.endpoint, database=f"/tmp/benchmark/{scale}/hyper",create_mode=CreateMode.NONE) as connection:
-            times = []
             for query in range(1, 23):
                 start = time.time()
                 text = open(f"queries/{query}.sql").read()
                 connection.execute_query(text).close()
                 end = time.time()
-                times.append(end-start)
-            print(statistics.geometric_mean(times))
+                print(f'Hyper\t{cpus}\t{memory}\t{scale}\t{query}\t{end-start}')
 
-for scale in [1, 2, 4, 8, 16, 32, 64]:
-    print(f"Scale {scale}...")
-    print("...generate data")
+print('System\tCPUs\tMemory\tScale\tQuery\tTime')
+scale = min_scale
+while scale <= max_scale:
     generate_all_data(scale)
-    print("...copy to DuckDB")
     copy_to_duckdb(scale)
-    print("...copy to Hyper")
     copy_to_hyper(scale)
-    print("...benchmark DuckDB")
     benchmark_duckdb(scale)
-    print("...benchmark Hyper")
     benchmark_hyper(scale)
+    scale = scale * 2
 
