@@ -9,7 +9,7 @@ cpus = int(sys.argv[1])
 memory = cpus * 4
 min_scale = cpus * 2
 max_scale = min_scale * 2 * 2
-memory_per_scale = 8 # we need a 8:1 ratio of memory to the size of data we generate concurrently.
+memory_per_scale = 4 # 4:1 ratio of memory to the size of data we generate concurrently.
 steps = int(cpus * memory_per_scale * max_scale / memory) # memory_per_scale = memory / (max_scale * cpus / steps)
 tables = ['nation','region','customer','supplier','lineitem','orders','partsupp','part']
 
@@ -29,6 +29,7 @@ def generate_data(scale, step):
     duckdb.sql(f"create schema tpch_{scale}_{step}; call dbgen(schema=tpch_{scale}_{step}, sf={scale}, children={steps}, step={step})")
     for table in tables:
         duckdb.sql(f"copy tpch_{scale}_{step}.{table} to '/tmp/benchmark/{scale}/{table}/{step}.parquet'")
+    duckdb.sql(f"drop schema tpch_{scale}_{step} cascade;")
 
 def generate_all_data(scale):
     make_dirs(scale)
