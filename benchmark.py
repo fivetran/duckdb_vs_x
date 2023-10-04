@@ -34,7 +34,7 @@ def generate_data(scale, step):
 def generate_all_data(scale):
     make_dirs(scale)
     tasks = []
-    with concurrent.futures.ThreadPoolExecutor(cpus) as executor:
+    with concurrent.futures.ProcessPoolExecutor(cpus) as executor:
         for step in range(0, steps):
             future = executor.submit(generate_data, scale, step)
             tasks.append(future)
@@ -78,13 +78,14 @@ def benchmark_hyper(scale):
                 end = time.time()
                 print(f'Hyper\t{cpus}\t{memory}\t{scale}\t{query}\t{end-start}')
 
-print('System\tCPUs\tMemory\tScale\tQuery\tTime')
-scale = min_scale
-while scale <= max_scale:
-    generate_all_data(scale)
-    copy_to_duckdb(scale)
-    copy_to_hyper(scale)
-    benchmark_duckdb(scale)
-    benchmark_hyper(scale)
-    scale = scale * 2
+if __name__ == "__main__":
+    print('System\tCPUs\tMemory\tScale\tQuery\tTime')
+    scale = min_scale
+    while scale <= max_scale:
+        generate_all_data(scale)
+        copy_to_duckdb(scale)
+        copy_to_hyper(scale)
+        benchmark_duckdb(scale)
+        benchmark_hyper(scale)
+        scale = scale * 2
 
