@@ -55,7 +55,7 @@ def copy_to_hyper(scale):
     with HyperProcess(telemetry=Telemetry.SEND_USAGE_DATA_TO_TABLEAU) as hyper:
         with Connection(endpoint=hyper.endpoint, database=f"/tmp/benchmark/{scale}/hyper",create_mode=CreateMode.CREATE_AND_REPLACE) as connection:
             for table in ['nation','region','customer','supplier','lineitem','orders','partsupp','part']:
-                files_list =[ f"'/tmp/benchmark/{scale}/{table}/{step}.parquet'" for step in range(0, steps) ]
+                files_list = [f"'/tmp/benchmark/{scale}/{table}/{step}.parquet'" for step in range(0, steps)]
                 files_string = ", ".join(files_list)
                 connection.execute_command(f"create table {table} as (select * from external(array[{files_string}]))")
 
@@ -84,8 +84,8 @@ if __name__ == "__main__":
     while scale <= max_scale:
         generate_all_data(scale)
         copy_to_duckdb(scale)
-        copy_to_hyper(scale)
         benchmark_duckdb(scale)
+        copy_to_hyper(scale)
         benchmark_hyper(scale)
         scale = scale * 2
 
