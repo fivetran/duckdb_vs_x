@@ -1,0 +1,37 @@
+                    executiontarget(1)                     
+                    card 1                                 
+                                                           
+                    sort(2)                                
+                    card 1                                 
+                    actual 1                               
+                    execution-time 0 %                     
+                                                           
+                         join(3)                           
+                         hash                              
+                         card 1                            
+                         actual 1                          
+                                                           
+                join(4)                  tablescan(10)     
+                hash                     supplier          
+                card 1                   ep: (3)           
+                actual 1                 card 2.56e+06     
+                                         actual 1          
+groupby(5)          explicitscan(9)->(7) execution-time 0 %
+card 1              actual 2560000                         
+actual 1            execution-time 1 %                     
+execution-time 0 %                                         
+                                                           
+explicitscan(6)                                            
+actual 2560000                                             
+execution-time 35 %                                        
+                                                           
+groupby(7)                                                 
+card 7.10328e+06                                           
+actual 0                                                   
+execution-time 0 %                                         
+                                                           
+tablescan(8)                                               
+lineitem                                                   
+card 6.14401e+07                                           
+actual 58092796                                            
+execution-time 63 %                                        

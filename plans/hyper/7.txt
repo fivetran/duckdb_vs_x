@@ -1,0 +1,47 @@
+                                                executiontarget(1)                                                 
+                                                card 62500                                                         
+                                                                                                                   
+                                                sort(2)                                                            
+                                                card 62500                                                         
+                                                actual 4                                                           
+                                                execution-time 0 %                                                 
+                                                                                                                   
+                                                groupby(3)                                                         
+                                                card 62500                                                         
+                                                actual 4                                                           
+                                                execution-time 0 %                                                 
+                                                                                                                   
+                                                 map(4)                                                            
+                                                 card 5.52437e+07                                                  
+                                                 actual 1494712                                                    
+                                                                                                                   
+                                                 join(5)                                                           
+                                                 hash                                                              
+                                                 card 5.52437e+07                                                  
+                                                 actual 1494712                                                    
+                                                                                                                   
+tablescan(6)                                               join(7)                                                 
+customer                                                   hash                                                    
+card 3.84e+07                                              card 1.20764e+08                                        
+actual 38400000                                            actual 37398876                                         
+execution-time 1 %                                                                                                 
+                                                 join(8)                                        tablescan(15)      
+                                                 hash                                           orders             
+                                                 card 1.20764e+08                               ep: (7)            
+                                                 actual 37398876                                card 3.84e+08      
+                                                                                                actual 37401447    
+                                       join(9)                              tablescan(14)       execution-time 56 %
+                                       hash                                 lineitem                               
+                                       card 1.91259e+06                     ep: (8)                                
+                                       actual 205199                        card 4.48513e+08                       
+                                                                            actual 47848092                        
+                               join(10)                  tablescan(13)      execution-time 41 %                    
+                               bnl                       supplier                                                  
+                               card 18.6777              ep: (9)                                                   
+                               actual 2                  card 2.56e+06                                             
+                                                         actual 205199                                             
+                   tablescan(11)      tablescan(12)      execution-time 0 %                                        
+                   n2                 n1                                                                           
+                   card 25            card 25                                                                      
+                   actual 25          actual 25                                                                    
+                   execution-time 0 % execution-time 0 %                                                           

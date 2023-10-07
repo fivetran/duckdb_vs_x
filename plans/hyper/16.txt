@@ -1,0 +1,29 @@
+                   executiontarget(1)                    
+                   card 187500                           
+                                                         
+                   sort(2)                               
+                   card 187500                           
+                   actual 27840                          
+                   execution-time 0 %                    
+                                                         
+                   groupby(3)                            
+                   card 187500                           
+                   actual 27840                          
+                   execution-time 0 %                    
+                                                         
+                    rightantijoin(4)                     
+                    hash                                 
+                    card 4.35682e+07                     
+                    actual 30392728                      
+                                                         
+tablescan(5)                  join(6)                    
+supplier                      hash                       
+card 2560                     card 4.35754e+07           
+actual 1257                   actual 30407652            
+execution-time 1 %                                       
+                   tablescan(7)       tablescan(8)       
+                   part               partsupp           
+                   card 7.0656e+06    ep: (6)            
+                   actual 7601913     card 2.048e+08     
+                   execution-time 5 % actual 35268768    
+                                      execution-time 92 %

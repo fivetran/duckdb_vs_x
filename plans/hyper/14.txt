@@ -1,0 +1,23 @@
+          executiontarget(1)           
+          card 1                       
+                                       
+               map(2)                  
+               card 1                  
+               actual 1                
+                                       
+          groupby(3)                   
+          card 1                       
+          actual 1                     
+          execution-time 0 %           
+                                       
+            join(4)                    
+            hash                       
+            card 2.1504e+07            
+            actual 19160691            
+                                       
+tablescan(5)        tablescan(6)       
+lineitem            part               
+card 2.1504e+07     ep: (4)            
+actual 19160691     card 5.12e+07      
+execution-time 58 % actual 16545418    
+                    execution-time 41 %

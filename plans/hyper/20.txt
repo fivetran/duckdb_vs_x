@@ -1,0 +1,33 @@
+                                       executiontarget(1)                                        
+                                       card 15754.8                                              
+                                                                                                 
+                                       sort(2)                                                   
+                                       card 15754.8                                              
+                                       actual 46304                                              
+                                       execution-time 0 %                                        
+                                                                                                 
+                                         leftsemijoin(3)                                         
+                                         hash                                                    
+                                         card 15754.8                                            
+                                         actual 46304                                            
+                                                                                                 
+            join(4)                                        join(7)                               
+            hash                                           hash                                  
+            card 102400                                    card 2.58308e+06                      
+            actual 102712                                  actual 97115                          
+                                                                                                 
+tablescan(5)       tablescan(6)                  rightsemijoin(8)              map(11)           
+nation             supplier                      hash                          card 2.10432e+08  
+card 1             ep: (4)                       card 3.44411e+06              actual 2453487    
+actual 1           card 2.56e+06                 actual 141821                                   
+execution-time 0 % actual 102712                                              groupby(12)        
+                   execution-time 0 % tablescan(9)        tablescan(10)       card 2.10432e+08   
+                                      part                partsupp            actual 2453487     
+                                      card 563200         ep: (8)(3)          execution-time 7 % 
+                                      actual 555948       card 2.048e+08                         
+                                      execution-time 26 % actual 141821       tablescan(13)      
+                                                          execution-time 24 % lineitem           
+                                                                              ep: (7)            
+                                                                              card 2.10432e+08   
+                                                                              actual 4068844     
+                                                                              execution-time 40 %

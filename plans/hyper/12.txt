@@ -1,0 +1,24 @@
+          executiontarget(1)           
+          card 7                       
+                                       
+          sort(2)                      
+          card 7                       
+          actual 2                     
+          execution-time 0 %           
+                                       
+          groupby(3)                   
+          card 7                       
+          actual 2                     
+          execution-time 0 %           
+                                       
+           join(4)                     
+           hash                        
+           card 6.29569e+07            
+           actual 7974154              
+                                       
+tablescan(5)        tablescan(6)       
+lineitem            orders             
+card 6.29569e+07    ep: (4)            
+actual 7974154      card 3.84e+08      
+execution-time 39 % actual 17649744    
+                    execution-time 60 %

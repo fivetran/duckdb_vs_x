@@ -16,8 +16,8 @@ def explain_duckdb(scale):
     with duckdb.connect(f"/tmp/benchmark/{scale}/duckdb") as connection:
         for query in range(1, 23):
             text = open(f"queries/{query}.sql").read()
-            result = connection.sql(f"explain {text}").fetchone()
-            with open(f"plans/duckdb/{query}.sql", "w") as file:
+            result = connection.sql(f"explain analyze {text}").fetchone()
+            with open(f"plans/duckdb/{query}.txt", "w") as file:
                 file.write(result[1]) # type: ignore
 
 def explain_hyper(scale):
@@ -26,8 +26,8 @@ def explain_hyper(scale):
         with Connection(endpoint=hyper.endpoint, database=f"/tmp/benchmark/{scale}/hyper",create_mode=CreateMode.NONE) as connection:
             for query in range(1, 23):
                 text = open(f"queries/{query}.sql").read()
-                result = connection.execute_query(f"explain {text}")
-                with open(f"plans/hyper/{query}.sql", "w") as file:
+                result = connection.execute_query(f"explain analyze {text}")
+                with open(f"plans/hyper/{query}.txt", "w") as file:
                     while result.next_row():
                         file.write(result.get_value(0) + "\n")
                 result.close()

@@ -1,0 +1,57 @@
+                                                                    executiontarget(1)                                                                    
+                                                                    card 100                                                                              
+                                                                                                                                                          
+                                                                    sort(2)                                                                               
+                                                                    card 100                                                                              
+                                                                    actual 2                                                                              
+                                                                    execution-time 0 %                                                                    
+                                                                                                                                                          
+                                                                         map(3)                                                                           
+                                                                         card 100                                                                         
+                                                                         actual 2                                                                         
+                                                                                                                                                          
+                                                                    groupby(4)                                                                            
+                                                                    card 100                                                                              
+                                                                    actual 2                                                                              
+                                                                    execution-time 0 %                                                                    
+                                                                                                                                                          
+                                                                      map(5)                                                                              
+                                                                      card 29808.7                                                                        
+                                                                      actual 622436                                                                       
+                                                                                                                                                          
+                                                                      join(6)                                                                             
+                                                                      hash                                                                                
+                                                                      card 29808.7                                                                        
+                                                                      actual 622436                                                                       
+                                                                                                                                                          
+tablescan(7)                                                                    join(8)                                                                   
+n2                                                                              hash                                                                      
+card 25                                                                         card 29808.7                                                              
+actual 25                                                                       actual 622436                                                             
+execution-time 0 %                                                                                                                                        
+                                 join(9)                                                           join(12)                                               
+                                 hash                                                              hash                                                   
+                                 card 5                                                            card 149044                                            
+                                 actual 5                                                          actual 622436                                          
+                                                                                                                                                          
+                   tablescan(10)      tablescan(11)                                      join(13)                                       tablescan(20)     
+                   region             n1                                                 hash                                           customer          
+                   card 1             ep: (9)                                            card 325813                                    ep: (12)(8)       
+                   actual 1           card 25                                            actual 3118619                                 card 3.84e+07     
+                   execution-time 0 % actual 5                                                                                          actual 725162     
+                                      execution-time 0 %                      join(14)                              tablescan(19)       execution-time 6 %
+                                                                              hash                                  orders                                
+                                                                              card 555821                           ep: (13)                              
+                                                                              actual 10261612                       card 1.20576e+08                      
+                                                                                                                    actual 5127323                        
+                                                                    join(15)                    tablescan(18)       execution-time 23 %                   
+                                                                    hash                        supplier                                                  
+                                                                    card 1.54225e+06            ep: (14)                                                  
+                                                                    actual 10261612             card 2.56e+06                                             
+                                                                                                actual 1086650                                            
+                                                         tablescan(16)      tablescan(17)       execution-time 10 %                                       
+                                                         part               lineitem                                                                      
+                                                         card 256000        ep: (15)                                                                      
+                                                         actual 341973      card 1.536e+09                                                                
+                                                         execution-time 0 % actual 40854585                                                               
+                                                                            execution-time 59 %                                                           

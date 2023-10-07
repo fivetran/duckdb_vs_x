@@ -1,0 +1,13 @@
+executiontarget(1) 
+card 1             
+                   
+groupby(2)         
+card 1             
+actual 1           
+execution-time 0 % 
+                   
+tablescan(3)       
+lineitem           
+card 3.37921e+07   
+actual 29230248    
+execution-time 99 %

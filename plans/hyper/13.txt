@@ -1,0 +1,28 @@
+          executiontarget(1)          
+          card 3.456e+07              
+                                      
+          sort(2)                     
+          card 3.456e+07              
+          actual 44                   
+          execution-time 0 %          
+                                      
+          groupby(3)                  
+          card 3.456e+07              
+          actual 44                   
+          execution-time 0 %          
+                                      
+         groupby(4)                   
+         card 3.84e+07                
+         actual 38400000              
+         execution-time 15 %          
+                                      
+           leftouterjoin(5)           
+           hash                       
+           card 1.73972e+08           
+           actual 392835758           
+                                      
+tablescan(6)       tablescan(7)       
+customer           orders             
+card 3.84e+07      card 3.79392e+08   
+actual 38400000    actual 380035531   
+execution-time 0 % execution-time 84 %

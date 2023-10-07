@@ -1,0 +1,24 @@
+          executiontarget(1)          
+          card 5                      
+                                      
+          sort(2)                     
+          card 5                      
+          actual 5                    
+          execution-time 0 %          
+                                      
+          groupby(3)                  
+          card 5                      
+          actual 5                    
+          execution-time 0 %          
+                                      
+           leftsemijoin(4)            
+           hash                       
+           card 1.61188e+07           
+           actual 13467542            
+                                      
+tablescan(5)       tablescan(6)       
+orders             lineitem           
+card 1.6128e+07    ep: (4)            
+actual 14687029    card 1.53538e+09   
+execution-time 6 % actual 61530105    
+                   execution-time 93 %
