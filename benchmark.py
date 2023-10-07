@@ -60,23 +60,25 @@ def copy_to_hyper(scale):
                 connection.execute_command(f"create table {table} as (select * from external(array[{files_string}]))")
 
 def benchmark_duckdb(scale):
-    with duckdb.connect(f"/tmp/benchmark/{scale}/duckdb") as connection:
+    for _ in range(3):
         for query in range(1, 23):
-            start = time.time()
-            text = open(f"queries/{query}.sql").read()
-            connection.sql(text).execute()
-            end = time.time()
-            print(f'DuckDB\t{cpus}\t{memory}\t{scale}\t{query}\t{end-start}')
+            with duckdb.connect(f"/tmp/benchmark/{scale}/duckdb", read_only=True) as connection:
+                start = time.time()
+                text = open(f"queries/{query}.sql").read()
+                connection.sql(text).execute()
+                end = time.time()
+                print(f'DuckDB\t{cpus}\t{memory}\t{scale}\t{query}\t{end-start}')
 
 def benchmark_hyper(scale):
     with HyperProcess(telemetry=Telemetry.SEND_USAGE_DATA_TO_TABLEAU) as hyper:
         with Connection(endpoint=hyper.endpoint, database=f"/tmp/benchmark/{scale}/hyper",create_mode=CreateMode.NONE) as connection:
-            for query in range(1, 23):
-                start = time.time()
-                text = open(f"queries/{query}.sql").read()
-                connection.execute_query(text).close()
-                end = time.time()
-                print(f'Hyper\t{cpus}\t{memory}\t{scale}\t{query}\t{end-start}')
+            for _ in range(3):
+                for query in range(1, 23):
+                    start = time.time()
+                    text = open(f"queries/{query}.sql").read()
+                    connection.execute_query(text).close()
+                    end = time.time()
+                    print(f'Hyper\t{cpus}\t{memory}\t{scale}\t{query}\t{end-start}')
 
 if __name__ == "__main__":
     print('System\tCPUs\tMemory\tScale\tQuery\tTime')
